@@ -1,0 +1,2 @@
+tej = 'ujefbajkndfaj'
+print(tej)

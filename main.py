@@ -11,9 +11,9 @@ class Window(QWidget):
         self.myListWidget1 = QListWidget()
         self.myListWidget2 = QListWidget()
 
-        run_button = QPushButton(QIcon("run.png"), "Run")
-        str_button = QPushButton(QIcon("string.png"), "String")
-        int_button = QPushButton(QIcon("int.png"), "Integer")
+        run_button = QPushButton(QIcon("images/run.png"), "Run")
+        str_button = QPushButton(QIcon("images/string.png"), "String")
+        int_button = QPushButton(QIcon("images/int.png"), "Integer")
         var_button = QPushButton("Var")
 
         #self.myListWidget2.setViewMode(QListWidget.IconMode)
@@ -33,12 +33,12 @@ class Window(QWidget):
         
         self.button_layout1 = QVBoxLayout()
         buttons1 = [
-            ("Run", "run.png", self.run_action),
-            ("String", "string.png", self.str_add),
-            ("Integer", "int.png", self.int_add),
-            ("Variable", "var.png", self.var_add),
-            ("Input", "terminal.png", self.input_add),
-            ("Function", "func.png", self.other_action)
+            ("Run", "images/run.png", self.run_action),
+            ("String", "images/string.png", self.str_add),
+            ("Integer", "images/int.png", self.int_add),
+            ("Variable", "images/var.png", self.var_add),
+            ("Input", "images/terminal.png", self.input_add),
+            ("Function", "images/func.png", self.other_action)
         ]
         for label, icon_path, action in buttons1:
             button = QPushButton(QIcon(icon_path), label)
@@ -47,12 +47,12 @@ class Window(QWidget):
             
         self.hboxlayout.addLayout(self.button_layout1)
 
-        l1 = QListWidgetItem(QIcon("terminal.png"), 'Print')
-        l2 = QListWidgetItem(QIcon("loop.png"), 'For Loop')
-        l3 = QListWidgetItem(QIcon("loop.png"), 'End Loop')
-        l4 = QListWidgetItem(QIcon("wait.png"), 'Wait')
+        l1 = QListWidgetItem(QIcon("images/terminal.png"), 'Print')
+        l2 = QListWidgetItem(QIcon("images/loop.png"), 'For Loop')
+        l3 = QListWidgetItem(QIcon("images/loop.png"), 'End Loop')
+        l4 = QListWidgetItem(QIcon("images/wait.png"), 'Wait')
 
-        l0 = QListWidgetItem(QIcon("run.png"), 'On Run:')
+        l0 = QListWidgetItem(QIcon("images/run.png"), 'On Run:')
 
         self.myListWidget1.insertItem(1, l1)
         self.myListWidget1.insertItem(2, l2)
@@ -62,7 +62,7 @@ class Window(QWidget):
         self.myListWidget2.insertItem(1, l0)
 
         self.setWindowTitle("Block Python")
-        self.setWindowIcon(QtGui.QIcon('owo.png'))
+        self.setWindowIcon(QtGui.QIcon('images/owo.png'))
         self.setLayout(self.hboxlayout)
         self.show()
 
@@ -208,22 +208,22 @@ class Window(QWidget):
     
     def str_add(self):
         text, ok = QInputDialog.getText(self, 'Create String', 'Enter the string value:')
-        s1 = QListWidgetItem(QIcon("string.png"), f'<str> {text}')
+        s1 = QListWidgetItem(QIcon("images/string.png"), f'<str> {text}')
         self.myListWidget2.insertItem(1000, s1)
     
     def int_add(self):
         text, ok = QInputDialog.getText(self, 'Create Integer', 'Enter the value:')
-        s1 = QListWidgetItem(QIcon("int.png"), f'<int> {text}')
+        s1 = QListWidgetItem(QIcon("images/int.png"), f'<int> {text}')
         self.myListWidget2.insertItem(1000, s1)
 
     def var_add(self):
         text, ok = QInputDialog.getText(self, 'Create Variable', 'Enter the name:')
-        s1 = QListWidgetItem(QIcon("var.png"), f'<var> {text}')
+        s1 = QListWidgetItem(QIcon("images/var.png"), f'<var> {text}')
         self.myListWidget1.insertItem(1000, s1)
 
     def input_add(self):
         text, ok = QInputDialog.getText(self, 'Create An Input', 'Enter the input prompt:')
-        s1 = QListWidgetItem(QIcon("terminal.png"), f'<input> {text}')
+        s1 = QListWidgetItem(QIcon("images/terminal.png"), f'<input> {text}')
         self.myListWidget2.insertItem(1000, s1)
 
     def other_action(self):

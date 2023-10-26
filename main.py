@@ -37,7 +37,8 @@ class Window(QWidget):
             ("String", "string.png", self.str_add),
             ("Integer", "int.png", self.int_add),
             ("Variable", "var.png", self.var_add),
-            ("Function", "func.png", self.other_action),
+            ("Input", "terminal.png", self.input_add),
+            ("Function", "func.png", self.other_action)
         ]
         for label, icon_path, action in buttons1:
             button = QPushButton(QIcon(icon_path), label)
@@ -47,14 +48,16 @@ class Window(QWidget):
         self.hboxlayout.addLayout(self.button_layout1)
 
         l1 = QListWidgetItem(QIcon("terminal.png"), 'Print')
-        #l2 = QListWidgetItem(QIcon("string.png"), '=> String')
-        #l3 = QListWidgetItem(QIcon("int.png"), '=> Integer')
+        l2 = QListWidgetItem(QIcon("loop.png"), 'For Loop')
+        l3 = QListWidgetItem(QIcon("loop.png"), 'End Loop')
+        l4 = QListWidgetItem(QIcon("wait.png"), 'Wait')
 
         l0 = QListWidgetItem(QIcon("run.png"), 'On Run:')
 
         self.myListWidget1.insertItem(1, l1)
-        #self.myListWidget1.insertItem(2, l2)
-        #self.myListWidget1.insertItem(3, l3)
+        self.myListWidget1.insertItem(2, l2)
+        self.myListWidget1.insertItem(3, l3)
+        self.myListWidget1.insertItem(4, l4)
 
         self.myListWidget2.insertItem(1, l0)
 
@@ -72,12 +75,23 @@ class Window(QWidget):
         rargs = 0
         parg = ""
         vargs = 0
+        indent = False
+        erag = False
+        time = False
         for prompt in u:
             if vargs != 0:
                 if prompt.startswith("<str>"):
                     prompt = prompt.replace("<str> ", "")
                     if vargs == 1:
                         parg = f"{parg}'{prompt}'"
+                        lines.append(parg)
+                        vargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                if prompt.startswith("<input>"):
+                    prompt = prompt.replace("<input> ", "")
+                    if vargs == 1:
+                        parg = f"{parg}input('{prompt}')"
                         lines.append(parg)
                         vargs = 0
                     else: 
@@ -98,53 +112,94 @@ class Window(QWidget):
                     prompt = prompt.replace("<str> ", "")
                     if rargs == 1:
                         parg = f"{parg}'{prompt}')"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
                         lines.append(parg)
                         rargs = 0
                     elif rargs >1:
-                        parg = f"{parg}'{prompt}',"
+                        parg = f"{parg}'{prompt}', "
                         rargs -= 0
                     else: 
                         return print("Invalid Prompt(s)")
-                if prompt.startswith("<int>"):
+                elif prompt.startswith("<int>"):
                     try:
                         prompt = int(prompt.replace("<int> ", ""))
                     except:
                         return print("Non Int value in <int> tag")
                     if rargs == 1:
                         parg = f"{parg}{prompt})"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
                         lines.append(parg)
                         rargs = 0
                     elif rargs >1:
-                        parg = f"{parg}{prompt},"
+                        parg = f"{parg}{prompt}, "
                         rargs -= 0
                     else: 
                         return print("Invalid Prompt(s)")
-                if prompt.startswith("<var>"):
+                elif prompt.startswith("<var>"):
                     prompt = prompt.replace("<var> ", "")
                     if rargs == 1:
                         parg = f"{parg}{prompt})"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
                         lines.append(parg)
                         rargs = 0
                     elif rargs >1:
-                        parg = f"{parg}{prompt},"
+                        parg = f"{parg}{prompt}, "
+                        rargs -= 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<input>"):
+                    prompt = prompt.replace("<input> ", "")
+                    if rargs == 1:
+                        parg = f"{parg}input('{prompt}'))"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                        rargs = 0
+                    elif rargs >1:
+                        parg = f"{parg}input('{prompt}'), "
                         rargs -= 0
                     else: 
                         return print("Invalid Prompt(s)")
             else:
                 parg = ""
+                if indent == True:
+                    parg = "\t"
                 if prompt == "On Run:":
                     pass
                 elif prompt == "Print":
                     rargs = 1
-                    parg = "print("
+                    parg = f"{parg}print("
+                elif prompt == "For Loop":
+                    rargs = 1
+                    parg = f"{parg}for item in range("
+                    erag = True
+                    indent = True
+                elif prompt == "End Loop":
+                    indent = False
+                    pass
+                elif prompt == "Wait":
+                    rargs = 1
+                    parg = f"{parg}time.sleep("
+                    time = True
                 elif prompt.startswith("<var> "):
                     vargs = 1
                     prompt = prompt.replace("<var> ", "")
-                    parg = f"{prompt} = "
+                    parg = f"{parg}{prompt} = "
                 else:
                     return print("Invalid prompt(s)")
+                
         output = ""
         for line in lines:
+            if time == True:
+                output = f"{output}import time\n"
+                time = False
             output = f"{output}{line}\n"                    
         with open("output.py", "w") as file:
             file.write(output)
@@ -165,6 +220,11 @@ class Window(QWidget):
         text, ok = QInputDialog.getText(self, 'Create Variable', 'Enter the name:')
         s1 = QListWidgetItem(QIcon("var.png"), f'<var> {text}')
         self.myListWidget1.insertItem(1000, s1)
+
+    def input_add(self):
+        text, ok = QInputDialog.getText(self, 'Create An Input', 'Enter the input prompt:')
+        s1 = QListWidgetItem(QIcon("terminal.png"), f'<input> {text}')
+        self.myListWidget2.insertItem(1000, s1)
 
     def other_action(self):
         print("Other button clicked")

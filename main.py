@@ -99,8 +99,10 @@ class Window(QWidget):
                 if prompt.startswith("<int>"):
                     try:
                         prompt = int(prompt.replace("<int> ", ""))
-                    except:
+                    except ValueError:
                         return print("Non Int value in <int> tag")
+                    except Exception as e:
+                        return print(e)
                     if vargs == 1:
                         parg = f"{parg}{prompt}"
                         lines.append(parg)
@@ -125,8 +127,10 @@ class Window(QWidget):
                 elif prompt.startswith("<int>"):
                     try:
                         prompt = int(prompt.replace("<int> ", ""))
-                    except:
+                    except ValueError:
                         return print("Non Int value in <int> tag")
+                    except Exception as e:
+                        return print(e)
                     if rargs == 1:
                         parg = f"{parg}{prompt})"
                         if erag == True:

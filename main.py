@@ -75,7 +75,7 @@ class Window(QWidget):
         rargs = 0
         parg = ""
         vargs = 0
-        indent = False
+        indent = 0
         erag = False
         time = False
         for prompt in u:
@@ -173,8 +173,9 @@ class Window(QWidget):
                         return print("Invalid Prompt(s)")
             else:
                 parg = ""
-                if indent == True:
-                    parg = "\t"
+                if indent != 0:
+                    for f in range(indent):
+                        parg = f"{parg}\t"
                 if prompt == "On Run:":
                     pass
                 elif prompt == "Print":
@@ -184,9 +185,9 @@ class Window(QWidget):
                     rargs = 1
                     parg = f"{parg}for item in range("
                     erag = True
-                    indent = True
+                    indent += 1
                 elif prompt == "End Loop":
-                    indent = False
+                    indent -= 1
                     pass
                 elif prompt == "Wait":
                     rargs = 1

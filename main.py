@@ -50,15 +50,28 @@ class Window(QWidget):
         l1 = QListWidgetItem(QIcon("images/terminal.png"), 'Print')
         l2 = QListWidgetItem(QIcon("images/loop.png"), 'For Loop')
         l3 = QListWidgetItem(QIcon("images/loop.png"), 'End Loop')
+        l9 = QListWidgetItem(QIcon("images/branch.png"), 'If')
+        l10 = QListWidgetItem(QIcon("images/branch.png"), 'End If')
         l4 = QListWidgetItem(QIcon("images/wait.png"), 'Wait')
+        l5 = QListWidgetItem(QIcon("images/clock.png"), 'Current Time')
+        l6 = QListWidgetItem(QIcon("images/clock.png"), 'Current Date')
+        l7 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Equal To')
+        l8 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Not Equal To')
 
         l0 = QListWidgetItem(QIcon("images/run.png"), 'On Run:')
 
-        self.myListWidget1.insertItem(1, l1)
-        self.myListWidget1.insertItem(2, l2)
-        self.myListWidget1.insertItem(3, l3)
-        self.myListWidget1.insertItem(4, l4)
+        self.myListWidget1.insertItem(999, l1)
+        self.myListWidget1.insertItem(999, l2)
+        self.myListWidget1.insertItem(999, l3)
+        self.myListWidget1.insertItem(999, l9)
+        self.myListWidget1.insertItem(999, l10)
+        self.myListWidget1.insertItem(999, l4)
+        self.myListWidget1.insertItem(999, l5)
+        self.myListWidget1.insertItem(999, l6)
+        self.myListWidget1.insertItem(999, l7)
+        self.myListWidget1.insertItem(999, l8)
 
+            
         self.myListWidget2.insertItem(1, l0)
 
         self.setWindowTitle("Block Python")
@@ -75,28 +88,130 @@ class Window(QWidget):
         rargs = 0
         parg = ""
         vargs = 0
+        oargs = 0
+        xargs = 0
         indent = 0
         erag = False
         time = False
         for prompt in u:
-            if vargs != 0:
+            if xargs != 0:
+                if prompt.startswith("<str>"):
+                    prompt = prompt.replace("<str> ", "")
+                    if xargs == 1:
+                        parg = f"{parg}'{prompt}'"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<input>"):
+                    prompt = prompt.replace("<input> ", "")
+                    if xargs == 1:
+                        parg = f"{parg}input('{prompt}')"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("Current Date"):
+                    if vargs == 1:
+                        xarg = f"{parg}datetime.date.today()"
+                        time = True
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("Current Time"):
+                    if xargs == 1:
+                        parg = f"{parg}datetime.datetime.now().strftime('%H:%M:%S')"
+                        time = True
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<int>"):
+                    try:
+                        prompt = int(prompt.replace("<int> ", ""))
+                    except ValueError:
+                        return print("Non Int value in <int> tag")
+                    except Exception as e:
+                        return print(e)
+                    if xargs == 1:
+                        parg = f"{parg}{prompt}"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<var>"):
+                    prompt = prompt.replace("<var> ", "")
+                    if xargs == 1:
+                        parg = f"{parg}{prompt}"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+            elif oargs != 0:
+                if prompt.startswith("<opx> Equal To"):
+                    if oargs == 1:
+                        parg = f"{parg} == "
+                        oargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<opx> Not Equal To"):
+                    if oargs == 1:
+                        parg = f"{parg} == "
+                        oargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+            elif vargs != 0:
                 if prompt.startswith("<str>"):
                     prompt = prompt.replace("<str> ", "")
                     if vargs == 1:
                         parg = f"{parg}'{prompt}'"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
                         lines.append(parg)
                         vargs = 0
                     else: 
                         return print("Invalid Prompt(s)")
-                if prompt.startswith("<input>"):
+                elif prompt.startswith("<input>"):
                     prompt = prompt.replace("<input> ", "")
                     if vargs == 1:
                         parg = f"{parg}input('{prompt}')"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
                         lines.append(parg)
                         vargs = 0
                     else: 
                         return print("Invalid Prompt(s)")
-                if prompt.startswith("<int>"):
+                elif prompt.startswith("Current Date"):
+                    if vargs == 1:
+                        parg = f"{parg}datetime.date.today()"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                        time = True
+                        vargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("Current Time"):
+                    if vargs == 1:
+                        parg = f"{parg}datetime.datetime.now().strftime('%H:%M:%S')"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                        time = True
+                        vargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<var>"):
+                    prompt = prompt.replace("<var> ", "")
+                    if vargs == 1:
+                        parg = f"{parg}{prompt}"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                        vargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<int>"):
                     try:
                         prompt = int(prompt.replace("<int> ", ""))
                     except ValueError:
@@ -105,6 +220,9 @@ class Window(QWidget):
                         return print(e)
                     if vargs == 1:
                         parg = f"{parg}{prompt}"
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
                         lines.append(parg)
                         vargs = 0
                     else: 
@@ -171,11 +289,34 @@ class Window(QWidget):
                         rargs -= 0
                     else: 
                         return print("Invalid Prompt(s)")
+                elif prompt.startswith("Current Date"):
+                    if rargs == 1:
+                        parg = f"{parg}datetime.date.today())"
+                        lines.append(parg)
+                        time = True
+                        rargs = 0
+                    elif rargs >1:
+                        parg = f"{parg}datetime.date.today() , "
+                        rargs -= 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("Current Time"):
+                    if rargs == 1:
+                        parg = f"{parg}datetime.datetime.now().strftime('%H:%M:%S'))"
+                        lines.append(parg)
+                        time = True
+                        rargs = 0
+                    elif rargs >1:
+                        parg = f"{parg}datetime.datetime.now().strftime('%H:%M:%S') , "
+                        rargs -= 0
+                    else: 
+                        return print("Invalid Prompt(s)")
             else:
                 parg = ""
                 if indent != 0:
                     for f in range(indent):
                         parg = f"{parg}\t"
+                print(prompt)
                 if prompt == "On Run:":
                     pass
                 elif prompt == "Print":
@@ -189,10 +330,20 @@ class Window(QWidget):
                 elif prompt == "End Loop":
                     indent -= 1
                     pass
+                elif prompt == "End If":
+                    indent -= 1
+                    pass
                 elif prompt == "Wait":
                     rargs = 1
                     parg = f"{parg}time.sleep("
                     time = True
+                elif prompt == "If":
+                    erag = True
+                    xargs = 1
+                    vargs = 1
+                    oargs = 1
+                    parg = f"{parg}if "
+                    indent += 1
                 elif prompt.startswith("<var> "):
                     vargs = 1
                     prompt = prompt.replace("<var> ", "")
@@ -201,9 +352,10 @@ class Window(QWidget):
                     return print("Invalid prompt(s)")
                 
         output = ""
+        print(lines)
         for line in lines:
             if time == True:
-                output = f"{output}import time\n"
+                output = f"{output}import time\nimport datetime\n"
                 time = False
             output = f"{output}{line}\n"                    
         with open("output.py", "w") as file:

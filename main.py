@@ -38,7 +38,7 @@ class Window(QWidget):
             ("Integer", "images/int.png", self.int_add),
             ("Variable", "images/var.png", self.var_add),
             ("Input", "images/terminal.png", self.input_add),
-            ("Function", "images/func.png", self.other_action),
+            ("Function", "images/func.png", self.func_add),
             ("Comment", "images/sticky.png", self.comment_add)
         ]
         for label, icon_path, action in buttons1:
@@ -53,6 +53,7 @@ class Window(QWidget):
         l3 = QListWidgetItem(QIcon("images/loop.png"), 'End Loop')
         l9 = QListWidgetItem(QIcon("images/branch.png"), 'If')
         l10 = QListWidgetItem(QIcon("images/branch.png"), 'End If')
+        l11 = QListWidgetItem(QIcon("images/func.png"), 'End Func')
         l4 = QListWidgetItem(QIcon("images/wait.png"), 'Wait')
         l5 = QListWidgetItem(QIcon("images/clock.png"), 'Current Time')
         l6 = QListWidgetItem(QIcon("images/clock.png"), 'Current Date')
@@ -66,6 +67,7 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l3)
         self.myListWidget1.insertItem(999, l9)
         self.myListWidget1.insertItem(999, l10)
+        self.myListWidget1.insertItem(999, l11)
         self.myListWidget1.insertItem(999, l4)
         self.myListWidget1.insertItem(999, l5)
         self.myListWidget1.insertItem(999, l6)
@@ -333,6 +335,9 @@ class Window(QWidget):
                 elif prompt == "End If":
                     indent -= 1
                     pass
+                elif prompt == "End Func":
+                    indent -= 1
+                    pass
                 elif prompt == "Wait":
                     rargs = 1
                     parg = f"{parg}time.sleep("
@@ -351,6 +356,15 @@ class Window(QWidget):
                 elif prompt.startswith("<comment> "):
                     prompt = prompt.replace("<comment> ", "")
                     parg = f"{parg}# {prompt}"
+                    lines.append(parg)
+                elif prompt.startswith("<createfunc> "):
+                    prompt = prompt.replace("<createfunc> ", "")
+                    parg = f"{parg}def {prompt}():"
+                    lines.append(parg)
+                    indent += 1
+                elif prompt.startswith("<func> "):
+                    prompt = prompt.replace("<func> ", "")
+                    parg = f"{parg}{prompt}()"
                     lines.append(parg)
                 else:
                     return print("Invalid prompt(s)")
@@ -380,6 +394,13 @@ class Window(QWidget):
         text, ok = QInputDialog.getText(self, 'Create Variable', 'Enter the name:')
         s1 = QListWidgetItem(QIcon("images/var.png"), f'<var> {text}')
         self.myListWidget1.insertItem(1000, s1)
+    
+    def func_add(self):
+        text, ok = QInputDialog.getText(self, 'Create Function', "Enter the function's name:")
+        s1 = QListWidgetItem(QIcon("images/func.png"), f'<func> {text}')
+        self.myListWidget1.insertItem(1000, s1)
+        s2 = QListWidgetItem(QIcon("images/func.png"), f'<createfunc> {text}')
+        self.myListWidget2.insertItem(1000, s2)
 
     def input_add(self):
         text, ok = QInputDialog.getText(self, 'Create An Input', 'Enter the input prompt:')

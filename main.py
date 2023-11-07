@@ -38,7 +38,8 @@ class Window(QWidget):
             ("Integer", "images/int.png", self.int_add),
             ("Variable", "images/var.png", self.var_add),
             ("Input", "images/terminal.png", self.input_add),
-            ("Function", "images/func.png", self.other_action)
+            ("Function", "images/func.png", self.other_action),
+            ("Comment", "images/sticky.png", self.comment_add)
         ]
         for label, icon_path, action in buttons1:
             button = QPushButton(QIcon(icon_path), label)
@@ -151,7 +152,7 @@ class Window(QWidget):
                         return print("Invalid Prompt(s)")
                 elif prompt.startswith("<opx> Not Equal To"):
                     if oargs == 1:
-                        parg = f"{parg} == "
+                        parg = f"{parg} != "
                         oargs = 0
                     else: 
                         return print("Invalid Prompt(s)")
@@ -316,7 +317,6 @@ class Window(QWidget):
                 if indent != 0:
                     for f in range(indent):
                         parg = f"{parg}\t"
-                print(prompt)
                 if prompt == "On Run:":
                     pass
                 elif prompt == "Print":
@@ -348,11 +348,14 @@ class Window(QWidget):
                     vargs = 1
                     prompt = prompt.replace("<var> ", "")
                     parg = f"{parg}{prompt} = "
+                elif prompt.startswith("<comment> "):
+                    prompt = prompt.replace("<comment> ", "")
+                    parg = f"{parg}# {prompt}"
+                    lines.append(parg)
                 else:
                     return print("Invalid prompt(s)")
                 
         output = ""
-        print(lines)
         for line in lines:
             if time == True:
                 output = f"{output}import time\nimport datetime\n"
@@ -381,6 +384,11 @@ class Window(QWidget):
     def input_add(self):
         text, ok = QInputDialog.getText(self, 'Create An Input', 'Enter the input prompt:')
         s1 = QListWidgetItem(QIcon("images/terminal.png"), f'<input> {text}')
+        self.myListWidget2.insertItem(1000, s1)
+    
+    def comment_add(self):
+        text, ok = QInputDialog.getText(self, 'Create a Commetn', 'Enter the comment')
+        s1 = QListWidgetItem(QIcon("images/sticky.png"), f'<comment> {text}')
         self.myListWidget2.insertItem(1000, s1)
 
     def other_action(self):

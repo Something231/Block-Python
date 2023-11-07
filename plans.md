@@ -2,25 +2,24 @@
 
 ### Block Types
 
+- Done - Comparator Operators - Equal To, Not Equal To
 - READ FILE
-- WRITE FILE
-- Print
-- Variables (Assignment)
-- Wait
-- Loops
+- WRITE FILE 
+- Done - Print
+- Done - Variables (Assignment)
+- Done - Wait
+- Done - Ranged for loops
+- Regular for loops
+- While Loops
 - Func Blocks
 - Forever
-- If block
+- Done - If block
 - If / Else
 - Stop All
-- Mouse X
-- Mouse Y
-- Date
-- Time
+- Done - Date
+- Done - Time
 - Move Mouse
 - Math Operators
-- Comparator Operators
-- F Strings
 - Join Strings
 - Comments
 - Make A Request to the server
@@ -30,4 +29,3 @@
 - Time
 - Requests
 - OS
-- 

@@ -3,27 +3,34 @@
 ### Block Types
 
 - Done - Comparator Operators - Equal To, Not Equal To
-- READ FILE
-- WRITE FILE 
 - Done - Print
 - Done - Variables (Assignment)
 - Done - Wait
 - Done - Ranged for loops
-- Regular for loops
-- While Loops
-- Func Blocks
-- Forever
+- Done - Func Blocks
 - Done - If block
-- If / Else
-- Stop All
 - Done - Date
 - Done - Time
-- Move Mouse
+- Done - Comments
+- READ FILE
+- WRITE FILE 
+- If / Else
+- Stop All
+- Regular for loops
+- **While Loops**
 - Math Operators
-- Join Strings
-- Comments
+- Forever
 - Make A Request to the server
+
+### PyGame
+- Init - Create Window, Color Window Background, FrameRate, Window Size,
+- Drawing - Rectangles, Ellipses
+- 
+
+### Later Features
 - On Key Pressed
+- Move Mouse
+- Join Strings
 
 ### Needed Imports
 - Time

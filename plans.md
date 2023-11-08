@@ -34,5 +34,4 @@
 
 ### Needed Imports
 - Time
-- Requests
-- OS
+- Pygame

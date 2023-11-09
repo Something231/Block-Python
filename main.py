@@ -26,11 +26,25 @@ class Window(QWidget):
         self.myListWidget2.setDefaultDropAction(Qt.MoveAction)  # Allow moving items
         self.myListWidget2.setSelectionMode(QAbstractItemView.SingleSelection)  # Single item selection
 
+        gbuttons = [
+            ("Game Init", "images/game.png", self.other_action)
+        ]
+
         self.setGeometry(300, 350, 500, 300)
         self.hboxlayout = QHBoxLayout()
+        self.gbutton_layout = QVBoxLayout()
+
+        for label, icon_path, action in gbuttons:
+            button = QPushButton(QIcon(icon_path), label)
+            button.clicked.connect(action)
+            self.gbutton_layout.addWidget(button)\
+        
+        self.hboxlayout.addLayout(self.gbutton_layout)
         self.hboxlayout.addWidget(self.myListWidget1)
         self.hboxlayout.addWidget(self.myListWidget2)
         
+        
+
         self.button_layout1 = QVBoxLayout()
         buttons1 = [
             ("Run", "images/run.png", self.run_action),
@@ -41,16 +55,19 @@ class Window(QWidget):
             ("Function", "images/func.png", self.func_add),
             ("Comment", "images/sticky.png", self.comment_add)
         ]
+
         for label, icon_path, action in buttons1:
             button = QPushButton(QIcon(icon_path), label)
             button.clicked.connect(action)
             self.button_layout1.addWidget(button)
+    
             
         self.hboxlayout.addLayout(self.button_layout1)
 
         l1 = QListWidgetItem(QIcon("images/terminal.png"), 'Print')
         l2 = QListWidgetItem(QIcon("images/loop.png"), 'For Loop')
         l3 = QListWidgetItem(QIcon("images/loop.png"), 'End Loop')
+        l13 = QListWidgetItem(QIcon("images/loop.png"), 'Forever')
         l9 = QListWidgetItem(QIcon("images/branch.png"), 'If')
         l10 = QListWidgetItem(QIcon("images/branch.png"), 'End If')
         l11 = QListWidgetItem(QIcon("images/func.png"), 'End Func')
@@ -65,6 +82,7 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l1)
         self.myListWidget1.insertItem(999, l2)
         self.myListWidget1.insertItem(999, l3)
+        self.myListWidget1.insertItem(999, l13)
         self.myListWidget1.insertItem(999, l9)
         self.myListWidget1.insertItem(999, l10)
         self.myListWidget1.insertItem(999, l11)
@@ -96,6 +114,7 @@ class Window(QWidget):
         indent = 0
         erag = False
         time = False
+        game = False
         for prompt in u:
             if xargs != 0:
                 if prompt.startswith("<str>"):
@@ -349,6 +368,10 @@ class Window(QWidget):
                     oargs = 1
                     parg = f"{parg}if "
                     indent += 1
+                elif prompt == "Forever":
+                    parg = f"{parg}while True:"
+                    indent += 1
+                    lines.append(parg)
                 elif prompt.startswith("<var> "):
                     vargs = 1
                     prompt = prompt.replace("<var> ", "")
@@ -373,6 +396,9 @@ class Window(QWidget):
         for line in lines:
             if time == True:
                 output = f"{output}import time\nimport datetime\n"
+                time = False
+            if game == True:
+                output = f"{output}import pygame\nimport sys\n"
                 time = False
             output = f"{output}{line}\n"                    
         with open("output.py", "w") as file:

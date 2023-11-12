@@ -27,7 +27,7 @@ class Window(QWidget):
         self.myListWidget2.setSelectionMode(QAbstractItemView.SingleSelection)  # Single item selection
 
         gbuttons = [
-            ("Game Init", "images/game.png", self.other_action)
+            ("Game Init", "images/game.png", self.game_add)
         ]
 
         self.setGeometry(300, 350, 500, 300)
@@ -76,6 +76,8 @@ class Window(QWidget):
         l6 = QListWidgetItem(QIcon("images/clock.png"), 'Current Date')
         l7 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Equal To')
         l8 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Not Equal To')
+        l14 = QListWidgetItem(QIcon("images/game.png"), '<game> update')
+        l15 = QListWidgetItem(QIcon("images/game.png"), '<game> event loop')
 
         l0 = QListWidgetItem(QIcon("images/run.png"), 'On Run:')
 
@@ -91,6 +93,8 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l6)
         self.myListWidget1.insertItem(999, l7)
         self.myListWidget1.insertItem(999, l8)
+        self.myListWidget1.insertItem(999, l14)
+        self.myListWidget1.insertItem(999, l15)
 
             
         self.myListWidget2.insertItem(1, l0)
@@ -389,6 +393,38 @@ class Window(QWidget):
                     prompt = prompt.replace("<func> ", "")
                     parg = f"{parg}{prompt}()"
                     lines.append(parg)
+                elif prompt.startswith("<game> "):
+                    prompt = prompt.replace("<game> ", "")
+                    if prompt.startswith("init "):
+                        prompt = prompt.replace("init ", "")
+                        garg = f"{parg}pygame.init()"
+                        lines.append(garg)
+                        prompt = prompt.replace("l=", "")
+                        prompt = prompt.replace("h=", "")
+                        prompt = prompt.replace("c=", "")
+                        owo = prompt.split()
+                        garg = f"{parg}screen = pygame.display.set_mode(({owo[0]},{owo[1]}))\nclock = pygame.time.Clock()\nframerate = {owo[2]}"
+                        lines.append(garg)
+                        game = True
+                    elif prompt.startswith("update"):
+                        marg = f"{parg}pygame.display.update()"
+                        lines.append(marg)
+                        marg = f"{parg}clock.tick(framerate)"
+                        lines.append(marg)
+                        game = True
+                    elif prompt.startswith("event loop"):
+                        indent += 1
+                        marg = f"{parg}for event in pygame.event.get():"
+                        lines.append(marg)
+                        parg = f"{parg}\t"
+                        marg = f"{parg}if event.type == pygame.QUIT:"
+                        lines.append(marg)
+                        parg = f"{parg}\t"
+                        marg = f"{parg}pygame.quit()"
+                        lines.append(marg)
+                        marg = f"{parg}sys.exit()"
+                        lines.append(marg)
+                        game = True
                 else:
                     return print("Invalid prompt(s)")
                 
@@ -399,7 +435,7 @@ class Window(QWidget):
                 time = False
             if game == True:
                 output = f"{output}import pygame\nimport sys\n"
-                time = False
+                game = False
             output = f"{output}{line}\n"                    
         with open("output.py", "w") as file:
             file.write(output)
@@ -434,8 +470,16 @@ class Window(QWidget):
         self.myListWidget2.insertItem(1000, s1)
     
     def comment_add(self):
-        text, ok = QInputDialog.getText(self, 'Create a Commetn', 'Enter the comment')
+        text, ok = QInputDialog.getText(self, 'Create a Comment', 'Enter the comment')
         s1 = QListWidgetItem(QIcon("images/sticky.png"), f'<comment> {text}')
+        self.myListWidget2.insertItem(1000, s1)
+
+    def game_add(self): 
+        length, ok = QInputDialog.getText(self, 'Create a game', 'Enter the screen length:')
+        height, ok = QInputDialog.getText(self, 'Create a game', 'Enter the screen height:')
+        clock, ok = QInputDialog.getText(self, 'Create a game', 'Enter the FrameRate (60 is suggested):')
+
+        s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> init l={length} h={height} c={clock}')
         self.myListWidget2.insertItem(1000, s1)
 
     def other_action(self):

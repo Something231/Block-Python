@@ -5,6 +5,8 @@ from PyQt5 import QtGui
 import sys
 import subprocess
 
+print('Block Python - Copyright (c) 2023 Hamish Briggs')
+
 class Window(QWidget):
     def __init__(self):
         super().__init__()
@@ -27,7 +29,10 @@ class Window(QWidget):
         self.myListWidget2.setSelectionMode(QAbstractItemView.SingleSelection)  # Single item selection
 
         gbuttons = [
-            ("Game Init", "images/game.png", self.game_add)
+            ("Game Init", "images/game.png", self.game_add),
+            ("Game Title", "images/game.png", self.game_title),
+            ("Game bg colour", "images/game.png", self.game_bgcolour),
+            ("Game New Rect", "images/game.png", self.game_rect)
         ]
 
         self.setGeometry(300, 350, 500, 300)
@@ -37,7 +42,7 @@ class Window(QWidget):
         for label, icon_path, action in gbuttons:
             button = QPushButton(QIcon(icon_path), label)
             button.clicked.connect(action)
-            self.gbutton_layout.addWidget(button)\
+            self.gbutton_layout.addWidget(button)
         
         self.hboxlayout.addLayout(self.gbutton_layout)
         self.hboxlayout.addWidget(self.myListWidget1)
@@ -74,8 +79,12 @@ class Window(QWidget):
         l4 = QListWidgetItem(QIcon("images/wait.png"), 'Wait')
         l5 = QListWidgetItem(QIcon("images/clock.png"), 'Current Time')
         l6 = QListWidgetItem(QIcon("images/clock.png"), 'Current Date')
+        l16 = QListWidgetItem(QIcon("images/math.png"), '<math> Add')
+        l17 = QListWidgetItem(QIcon("images/math.png"), '<math> Subtract')
         l7 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Equal To')
         l8 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Not Equal To')
+        l18 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Is Larger Than')
+        l19 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Is Smaller Than')
         l14 = QListWidgetItem(QIcon("images/game.png"), '<game> update')
         l15 = QListWidgetItem(QIcon("images/game.png"), '<game> event loop')
 
@@ -91,8 +100,12 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l4)
         self.myListWidget1.insertItem(999, l5)
         self.myListWidget1.insertItem(999, l6)
+        self.myListWidget1.insertItem(999, l16)
+        self.myListWidget1.insertItem(999, l17)
         self.myListWidget1.insertItem(999, l7)
         self.myListWidget1.insertItem(999, l8)
+        self.myListWidget1.insertItem(999, l18)
+        self.myListWidget1.insertItem(999, l19)
         self.myListWidget1.insertItem(999, l14)
         self.myListWidget1.insertItem(999, l15)
 
@@ -115,11 +128,27 @@ class Window(QWidget):
         vargs = 0
         oargs = 0
         xargs = 0
+        jargs = 0
         indent = 0
         erag = False
         time = False
         game = False
         for prompt in u:
+            if jargs != 0:
+                if prompt.startswith("<math>"):
+                    prompt = prompt.replace("<math> ", "")
+                    if jargs == 1:
+                        jargs = 0
+                        if prompt.startswith("Add"):
+                            parg = f"{parg} + "
+                            vargs += 1
+                        elif prompt.startswith("Subtract"):
+                            parg = f"{parg} - "
+                            vargs += 1
+                    else: 
+                        return print("Invalid Prompt(s)")
+                else:
+                    jargs = 0
             if xargs != 0:
                 if prompt.startswith("<str>"):
                     prompt = prompt.replace("<str> ", "")
@@ -179,9 +208,18 @@ class Window(QWidget):
                     if oargs == 1:
                         parg = f"{parg} != "
                         oargs = 0
+                elif prompt.startswith("<opx> Is Larger Than"):
+                    if oargs == 1:
+                        parg = f"{parg} > "
+                        oargs = 0
+                elif prompt.startswith("<opx> Is Smaller Than"):
+                    if oargs == 1:
+                        parg = f"{parg} < "
+                        oargs = 0
                     else: 
                         return print("Invalid Prompt(s)")
             elif vargs != 0:
+                jargs += 1
                 if prompt.startswith("<str>"):
                     prompt = prompt.replace("<str> ", "")
                     if vargs == 1:
@@ -253,6 +291,18 @@ class Window(QWidget):
                         vargs = 0
                     else: 
                         return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> rect "):
+                    prompt = prompt.replace("<game> rect ", "")
+                    prompt = prompt.replace("c=", "")
+                    prompt = prompt.replace("x=", "")
+                    prompt = prompt.replace("y=", "")
+                    prompt = prompt.replace("w=", "")
+                    prompt = prompt.replace("h=", "")
+                    owo = prompt.split()
+                    parg = f"{parg}pygame.draw.rect(screen, pygame.Color('{owo[0]}'), ({owo[1]}, {owo[2]}, {owo[3]}, {owo[4]}))"
+                    lines.append(parg)
+                    vargs = 0
+                    game = True
             elif rargs != 0:
                 if prompt.startswith("<str>"):
                     prompt = prompt.replace("<str> ", "")
@@ -425,6 +475,16 @@ class Window(QWidget):
                         marg = f"{parg}sys.exit()"
                         lines.append(marg)
                         game = True
+                    elif prompt.startswith("title"):
+                        prompt = prompt.replace("title ", "")
+                        parg = f"{parg}pygame.display.set_caption('{prompt}')"
+                        lines.append(parg)
+                        game = True
+                    elif prompt.startswith("bg colour"):
+                        prompt = prompt.replace("bg colour ", "")
+                        parg = f"{parg}screen.fill(pygame.Color('{prompt}'))"
+                        lines.append(parg)
+                        game = True
                 else:
                     return print("Invalid prompt(s)")
                 
@@ -474,12 +534,32 @@ class Window(QWidget):
         s1 = QListWidgetItem(QIcon("images/sticky.png"), f'<comment> {text}')
         self.myListWidget2.insertItem(1000, s1)
 
+    def game_title(self):
+        text, ok = QInputDialog.getText(self, 'Enter the title for your game', 'Enter the title:')
+        s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> title {text}')
+        self.myListWidget2.insertItem(1000, s1)
+        
+    def game_bgcolour(self):
+        text, ok = QInputDialog.getText(self, 'Background Colour', 'Enter the background colour:')
+        s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> bg colour {text}')
+        self.myListWidget2.insertItem(1000, s1)
+
     def game_add(self): 
         length, ok = QInputDialog.getText(self, 'Create a game', 'Enter the screen length:')
         height, ok = QInputDialog.getText(self, 'Create a game', 'Enter the screen height:')
         clock, ok = QInputDialog.getText(self, 'Create a game', 'Enter the FrameRate (60 is suggested):')
 
         s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> init l={length} h={height} c={clock}')
+        self.myListWidget2.insertItem(1000, s1)
+
+    def game_rect(self): 
+        colour, ok = QInputDialog.getText(self, 'Create a rectangle', 'Enter the colour:')
+        xpos, ok = QInputDialog.getText(self, 'Create a rectangle', 'Enter x position:')
+        ypos, ok = QInputDialog.getText(self, 'Create a rectangle', 'Enter y position:')
+        width, ok = QInputDialog.getText(self, 'Create a rectangle', 'Enter rectangle width:')
+        height, ok = QInputDialog.getText(self, 'Create a rectangle', 'Enter rectangle height:')
+
+        s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> rect c={colour} x={xpos} y={ypos} w={width} h={height}')
         self.myListWidget2.insertItem(1000, s1)
 
     def other_action(self):

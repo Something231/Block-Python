@@ -12,15 +12,18 @@
 - Done - Date
 - Done - Time
 - Done - Comments
+- Done - While Loops
+- Done - Math Operators
+- Done - Forever Loops
+- Done - HTTP Requests
+- Done - JSON to Dict convert
+- Done - Get item from dict
 - READ FILE
 - WRITE FILE 
-- If / Else
+- Else Block
 - Stop All
 - Regular for loops
-- **While Loops**
-- Math Operators
-- Forever
-- Make A Request to the server
+
 
 ### PyGame
 - Init - Create Window, Color Window Background, FrameRate, Window Size,
@@ -35,3 +38,5 @@
 ### Needed Imports
 - Time
 - Pygame
+- Json
+- Requests

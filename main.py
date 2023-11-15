@@ -32,7 +32,10 @@ class Window(QWidget):
             ("Game Init", "images/game.png", self.game_add),
             ("Game Title", "images/game.png", self.game_title),
             ("Game bg colour", "images/game.png", self.game_bgcolour),
-            ("Game New Rect", "images/game.png", self.game_rect)
+            ("Game New Rect", "images/game.png", self.game_rect),
+            ("Get Dict Item", "images/json.png", self.getitem),
+            ("Save Program", "images/save.png", self.save),
+            ("Load Program", "images/load.png", self.load)
         ]
 
         self.setGeometry(300, 350, 500, 300)
@@ -87,6 +90,8 @@ class Window(QWidget):
         l19 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Is Smaller Than')
         l14 = QListWidgetItem(QIcon("images/game.png"), '<game> update')
         l15 = QListWidgetItem(QIcon("images/game.png"), '<game> event loop')
+        l20 = QListWidgetItem(QIcon("images/request.png"), 'HTTP Request')
+        l21 = QListWidgetItem(QIcon("images/json.png"), 'Convert From JSON')
 
         l0 = QListWidgetItem(QIcon("images/run.png"), 'On Run:')
 
@@ -108,9 +113,14 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l19)
         self.myListWidget1.insertItem(999, l14)
         self.myListWidget1.insertItem(999, l15)
+        self.myListWidget1.insertItem(999, l20)
+        self.myListWidget1.insertItem(999, l21)
 
             
         self.myListWidget2.insertItem(1, l0)
+        
+        self.myListWidget2.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.myListWidget2.customContextMenuRequested.connect(self.show_context_menu)
 
         self.setWindowTitle("Block Python")
         self.setWindowIcon(QtGui.QIcon('images/owo.png'))
@@ -133,6 +143,8 @@ class Window(QWidget):
         erag = False
         time = False
         game = False
+        requests = False
+        njson = False
         for prompt in u:
             if jargs != 0:
                 if prompt.startswith("<math>"):
@@ -303,6 +315,28 @@ class Window(QWidget):
                     lines.append(parg)
                     vargs = 0
                     game = True
+                elif prompt == "HTTP Request":
+                    requests = True
+                    parg = f"{parg}requests.get("
+                    vargs = 0
+                    rargs += 1
+                elif prompt == "Convert From JSON":
+                    njson = True
+                    oo = parg.split()
+                    zz = oo[0]
+                    parg = f"{parg}{zz}.json()"
+                    vargs = 0
+                    lines.append(parg)
+                elif prompt.startswith("<dict> item "):
+                    if vargs == 1:
+                        prompt = prompt.replace("<dict> item ", "")
+                        oo = parg.split()
+                        zz = oo[0]
+                        parg = f"{parg}{zz}['{prompt}']"
+                        lines.append(parg)
+                        vargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
             elif rargs != 0:
                 if prompt.startswith("<str>"):
                     prompt = prompt.replace("<str> ", "")
@@ -496,6 +530,12 @@ class Window(QWidget):
             if game == True:
                 output = f"{output}import pygame\nimport sys\n"
                 game = False
+            if requests == True:
+                output = f"{output}import requests\n"
+                requests = False
+            if njson == True:
+                output = f"{output}import json\n"
+                njson = False
             output = f"{output}{line}\n"                    
         with open("output.py", "w") as file:
             file.write(output)
@@ -543,6 +583,11 @@ class Window(QWidget):
         text, ok = QInputDialog.getText(self, 'Background Colour', 'Enter the background colour:')
         s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> bg colour {text}')
         self.myListWidget2.insertItem(1000, s1)
+    
+    def getitem(self):
+        text, ok = QInputDialog.getText(self, 'Dict Item', 'Enter item you want to get from a dict')
+        s1 = QListWidgetItem(QIcon("images/json.png"), f'<dict> item {text}')
+        self.myListWidget2.insertItem(1000, s1)
 
     def game_add(self): 
         length, ok = QInputDialog.getText(self, 'Create a game', 'Enter the screen length:')
@@ -564,6 +609,52 @@ class Window(QWidget):
 
     def other_action(self):
         print("Other button clicked")
+    
+    def save(self):
+        s = []
+        for index in range(self.myListWidget2.count()):
+            item = self.myListWidget2.item(index)
+            s.append(item.text())
+        output = ""
+        for line in s:
+            output = f"{output}{line}\n"
+        with open("saved.bloc", "w") as f:
+            f.write(output)
+        print("File Saved!")
+    
+    def load(self):
+        with open("saved.bloc", "r") as f:
+            data = f.read()
+        self.myListWidget2.clear()
+        mexico = []
+        for line in data.split("\n"):
+            if line != "":               
+                mexico.append(line)
+        for item in mexico:
+            p1 = QListWidgetItem(QIcon("images/cpp.png"), item)
+            self.myListWidget2.insertItem(1000, p1)
+    
+    def show_context_menu(self, position):
+        # Create a context menu
+        context_menu = QMenu(self)
+        delete_action = QAction('Delete', self)
+        delete_action.triggered.connect(self.delete_item)
+        context_menu.addAction(delete_action)
+
+        # Show the context menu at the cursor position
+        context_menu.exec_(self.myListWidget2.mapToGlobal(position))
+
+    def delete_item(self):
+        selected_item = self.myListWidget2.currentItem()
+        if selected_item:
+            # Display a confirmation dialog
+            reply = QMessageBox.question(self, 'Delete Item', 'Are you sure you want to delete this item?',
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                # Remove the selected item from myListWidget2
+                self.myListWidget2.takeItem(self.myListWidget2.row(selected_item))
+        else:
+            QMessageBox.warning(self, 'Warning', 'No item selected for deletion.', QMessageBox.Ok)
 
 app = QApplication(sys.argv)
 

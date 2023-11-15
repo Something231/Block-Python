@@ -1,2 +1,2 @@
 # Block-Python
-yes
+Communist edition

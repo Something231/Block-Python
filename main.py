@@ -90,6 +90,13 @@ class Window(QWidget):
         l19 = QListWidgetItem(QIcon("images/questionmark.png"), '<opx> Is Smaller Than')
         l14 = QListWidgetItem(QIcon("images/game.png"), '<game> update')
         l15 = QListWidgetItem(QIcon("images/game.png"), '<game> event loop')
+        l22 = QListWidgetItem(QIcon("images/game.png"), '<game> event type')
+        l23 = QListWidgetItem(QIcon("images/game.png"), '<game> event keypress')
+        l28 = QListWidgetItem(QIcon("images/game.png"), '<game> keytype')
+        l24 = QListWidgetItem(QIcon("images/game.png"), '<game> key up')
+        l25 = QListWidgetItem(QIcon("images/game.png"), '<game> key down')
+        l26 = QListWidgetItem(QIcon("images/game.png"), '<game> key left')
+        l27 = QListWidgetItem(QIcon("images/game.png"), '<game> key right')
         l20 = QListWidgetItem(QIcon("images/request.png"), 'HTTP Request')
         l21 = QListWidgetItem(QIcon("images/json.png"), 'Convert From JSON')
 
@@ -113,6 +120,13 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l19)
         self.myListWidget1.insertItem(999, l14)
         self.myListWidget1.insertItem(999, l15)
+        self.myListWidget1.insertItem(999, l22)
+        self.myListWidget1.insertItem(999, l23)
+        self.myListWidget1.insertItem(999, l28)
+        self.myListWidget1.insertItem(999, l24)
+        self.myListWidget1.insertItem(999, l25)
+        self.myListWidget1.insertItem(999, l26)
+        self.myListWidget1.insertItem(999, l27)
         self.myListWidget1.insertItem(999, l20)
         self.myListWidget1.insertItem(999, l21)
 
@@ -206,6 +220,18 @@ class Window(QWidget):
                     prompt = prompt.replace("<var> ", "")
                     if xargs == 1:
                         parg = f"{parg}{prompt}"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> event type"):
+                    if xargs == 1:
+                        parg = f"{parg}event.type"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> keytype"):
+                    if xargs == 1:
+                        parg = f"{parg}event.key"
                         xargs = 0
                     else: 
                         return print("Invalid Prompt(s)")
@@ -335,6 +361,76 @@ class Window(QWidget):
                         parg = f"{parg}{zz}['{prompt}']"
                         lines.append(parg)
                         vargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> event type"):
+                    if vargs == 1:
+                        parg = f"{parg}event.type"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> event keypress"):
+                    if vargs == 1:
+                        parg = f"{parg}pygame.KEYDOWN"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> keytype"):
+                    if vargs == 1:
+                        parg = f"{parg}event.key"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> key up"):
+                    if vargs == 1:
+                        parg = f"{parg}pygame.K_UP"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> key down"):
+                    if vargs == 1:
+                        parg = f"{parg}pygame.K_DOWN"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> key left"):
+                    if vargs == 1:
+                        parg = f"{parg}pygame.K_LEFT"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> key right"):
+                    if vargs == 1:
+                        parg = f"{parg}pygame.K_RIGHT"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
                     else: 
                         return print("Invalid Prompt(s)")
             elif rargs != 0:

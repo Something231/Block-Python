@@ -55,6 +55,8 @@ If
 <math> Subtract
 <int> 5
 End If
+End If
+End Loop
 <game> bg colour red
 <var> rect2
 <game> rect c=yellow x=xpos3 y=150 w=50 h=50

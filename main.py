@@ -33,6 +33,7 @@ class Window(QWidget):
             ("Game Title", "images/game.png", self.game_title),
             ("Game bg colour", "images/game.png", self.game_bgcolour),
             ("Game New Rect", "images/game.png", self.game_rect),
+            ("Check Collisions", "images/game.png", self.game_cls),
             ("Get Dict Item", "images/json.png", self.getitem),
             ("Save Program", "images/save.png", self.save),
             ("Load Program", "images/load.png", self.load)
@@ -97,8 +98,13 @@ class Window(QWidget):
         l25 = QListWidgetItem(QIcon("images/game.png"), '<game> key down')
         l26 = QListWidgetItem(QIcon("images/game.png"), '<game> key left')
         l27 = QListWidgetItem(QIcon("images/game.png"), '<game> key right')
+        l31 = QListWidgetItem(QIcon("images/game.png"), '<game> key W')
+        l32 = QListWidgetItem(QIcon("images/game.png"), '<game> key S')
         l20 = QListWidgetItem(QIcon("images/request.png"), 'HTTP Request')
         l21 = QListWidgetItem(QIcon("images/json.png"), 'Convert From JSON')
+        l29 = QListWidgetItem(QIcon("images/true.png"), 'TRUE')
+        l30 = QListWidgetItem(QIcon("images/false.png"), 'FALSE')
+        
 
         l0 = QListWidgetItem(QIcon("images/run.png"), 'On Run:')
 
@@ -127,8 +133,12 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l25)
         self.myListWidget1.insertItem(999, l26)
         self.myListWidget1.insertItem(999, l27)
+        self.myListWidget1.insertItem(999, l31)
+        self.myListWidget1.insertItem(999, l32)
         self.myListWidget1.insertItem(999, l20)
         self.myListWidget1.insertItem(999, l21)
+        self.myListWidget1.insertItem(999, l29)
+        self.myListWidget1.insertItem(999, l30)
 
             
         self.myListWidget2.insertItem(1, l0)
@@ -160,6 +170,7 @@ class Window(QWidget):
         requests = False
         njson = False
         for prompt in u:
+            print(prompt)
             if jargs != 0:
                 if prompt.startswith("<math>"):
                     prompt = prompt.replace("<math> ", "")
@@ -232,6 +243,18 @@ class Window(QWidget):
                 elif prompt.startswith("<game> keytype"):
                     if xargs == 1:
                         parg = f"{parg}event.key"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("TRUE"):
+                    if xargs == 1:
+                        parg = f"{parg}True"
+                        xargs = 0
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("FALSE"):
+                    if xargs == 1:
+                        parg = f"{parg}False"
                         xargs = 0
                     else: 
                         return print("Invalid Prompt(s)")
@@ -426,6 +449,59 @@ class Window(QWidget):
                 elif prompt.startswith("<game> key right"):
                     if vargs == 1:
                         parg = f"{parg}pygame.K_RIGHT"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> key W"):
+                    if vargs == 1:
+                        parg = f"{parg}pygame.K_w"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> key S"):
+                    if vargs == 1:
+                        parg = f"{parg}pygame.K_s"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("<game> c-check if "):
+                    if vargs == 1:
+                        prompt = prompt.replace("<game> c-check if ", "")
+                        prompt = prompt.replace(" is colliding", "")
+                        prompt = prompt.split()
+                        parg = f"{parg}{prompt[0]}.colliderect({prompt[1]})"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("TRUE"):
+                    if vargs == 1:
+                        parg = f"{parg}True"
+                        vargs = 0
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
+                elif prompt.startswith("FALSE"):
+                    if vargs == 1:
+                        parg = f"{parg}False"
                         vargs = 0
                         if erag == True:
                             erag = False
@@ -701,6 +777,12 @@ class Window(QWidget):
         height, ok = QInputDialog.getText(self, 'Create a rectangle', 'Enter rectangle height:')
 
         s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> rect c={colour} x={xpos} y={ypos} w={width} h={height}')
+        self.myListWidget2.insertItem(1000, s1)
+    
+    def game_cls(self): 
+        item1, ok = QInputDialog.getText(self, 'Checking Collision (game)', 'What item are you checking?')
+        item2, ok = QInputDialog.getText(self, 'Checking Collision (game)', 'What item are you checking to collide?')
+        s1 = QListWidgetItem(QIcon("images/game.png"), f'<game> c-check if {item2} is colliding {item1}')
         self.myListWidget2.insertItem(1000, s1)
 
     def other_action(self):

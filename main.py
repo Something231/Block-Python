@@ -167,10 +167,10 @@ class Window(QWidget):
         erag = False
         time = False
         game = False
+        rand = False
         requests = False
         njson = False
         for prompt in u:
-            print(prompt)
             if jargs != 0:
                 if prompt.startswith("<math>"):
                     prompt = prompt.replace("<math> ", "")
@@ -621,6 +621,10 @@ class Window(QWidget):
                     rargs = 1
                     parg = f"{parg}time.sleep("
                     time = True
+                elif prompt.startswith("random"):
+                    parg = f"{parg}time.sleep("
+                    rand = True
+                    lines.append(parg)
                 elif prompt == "If":
                     erag = True
                     xargs = 1
@@ -708,6 +712,9 @@ class Window(QWidget):
             if njson == True:
                 output = f"{output}import json\n"
                 njson = False
+            if rand == True:
+                output = f"{output}import random\n"
+                rand = False
             output = f"{output}{line}\n"                    
         with open("output.py", "w") as file:
             file.write(output)

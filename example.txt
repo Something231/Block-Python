@@ -3,6 +3,8 @@ On Run:
 <game> title Pong!
 <var> bdirect
 <str> east
+<var> adirect
+<int> 1
 <var> ypos
 <int> 150
 <var> xpos
@@ -72,6 +74,8 @@ If
 TRUE
 <var> bdirect
 <str> west
+<var> adirect
+random int 1-5
 End If
 <var> checollide2
 <game> c-check if rect2 is colliding rect3
@@ -81,6 +85,8 @@ If
 TRUE
 <var> bdirect
 <str> east
+<var> adirect
+random int 1-5
 End If
 If
 <var> bdirect

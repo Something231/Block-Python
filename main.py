@@ -104,6 +104,7 @@ class Window(QWidget):
         l21 = QListWidgetItem(QIcon("images/json.png"), 'Convert From JSON')
         l29 = QListWidgetItem(QIcon("images/true.png"), 'TRUE')
         l30 = QListWidgetItem(QIcon("images/false.png"), 'FALSE')
+        l33 = QListWidgetItem(QIcon("images/die.png"), 'random int 1-5')
         
 
         l0 = QListWidgetItem(QIcon("images/run.png"), 'On Run:')
@@ -139,6 +140,7 @@ class Window(QWidget):
         self.myListWidget1.insertItem(999, l21)
         self.myListWidget1.insertItem(999, l29)
         self.myListWidget1.insertItem(999, l30)
+        self.myListWidget1.insertItem(999, l33)
 
             
         self.myListWidget2.insertItem(1, l0)
@@ -509,6 +511,17 @@ class Window(QWidget):
                         lines.append(parg)
                     else: 
                         return print("Invalid Prompt(s)")
+                elif prompt.startswith("random"):
+                    if vargs == 1:
+                        parg = f"{parg}random.randint(1,5)"
+                        vargs = 0
+                        rand = True
+                        if erag == True:
+                            erag = False
+                            parg = f"{parg}:"
+                        lines.append(parg)
+                    else: 
+                        return print("Invalid Prompt(s)")
             elif rargs != 0:
                 if prompt.startswith("<str>"):
                     prompt = prompt.replace("<str> ", "")
@@ -593,6 +606,17 @@ class Window(QWidget):
                         rargs -= 0
                     else: 
                         return print("Invalid Prompt(s)")
+                elif prompt.startswith("random"):
+                    if rargs == 1:
+                        parg = f"{parg}random.randint(1,5))"
+                        lines.append(parg)
+                        rand = True
+                        rargs = 0
+                    elif rargs >1:
+                        parg = f"{parg}random.randint(1,5) , "
+                        rargs -= 0
+                    else: 
+                        return print("Invalid Prompt(s)")
             else:
                 parg = ""
                 if indent != 0:
@@ -621,10 +645,6 @@ class Window(QWidget):
                     rargs = 1
                     parg = f"{parg}time.sleep("
                     time = True
-                elif prompt.startswith("random"):
-                    parg = f"{parg}time.sleep("
-                    rand = True
-                    lines.append(parg)
                 elif prompt == "If":
                     erag = True
                     xargs = 1
